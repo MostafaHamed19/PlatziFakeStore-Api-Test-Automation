@@ -37,7 +37,7 @@ public class ProductSmokeTest extends BaseTest {
         Assert.assertFalse(products.isEmpty(), "Array is empty");
     }
 
-    @Test(priority = 2)
+    @Test(dependsOnMethods = "getAllProductsTest")
     @Story("Create a new product")
     @Description("Create a product with title, price, description, category, and images")
     @Severity(SeverityLevel.CRITICAL)
@@ -66,7 +66,7 @@ public class ProductSmokeTest extends BaseTest {
         Assert.assertEquals(responseProduct.getDescription(), "Egyptian Cat");
     }
 
-    @Test(priority = 3)
+    @Test(dependsOnMethods = "createProductTest")
     @Story("Get product by ID")
     @Description("Verify retrieving a product using its ID returns correct data")
     @Severity(SeverityLevel.NORMAL)
@@ -81,7 +81,7 @@ public class ProductSmokeTest extends BaseTest {
         Assert.assertEquals(responseProduct.getDescription(), "Egyptian Cat");
     }
 
-    @Test(priority = 4)
+    @Test(dependsOnMethods = "createProductTest")
     @Story("Get product by Slug")
     @Description("Verify retrieving a product using its Slug returns correct data")
     @Severity(SeverityLevel.NORMAL)
@@ -96,7 +96,7 @@ public class ProductSmokeTest extends BaseTest {
         Assert.assertEquals(responseProduct.getDescription(), "Egyptian Cat");
     }
 
-    @Test(priority = 5)
+    @Test(dependsOnMethods = "createProductTest")
     @Story("Update product")
     @Description("Update the full product information")
     @Severity(SeverityLevel.CRITICAL)
@@ -121,7 +121,7 @@ public class ProductSmokeTest extends BaseTest {
         Assert.assertEquals(responseProduct.getImages(), images);
     }
 
-    @Test(priority = 6)
+    @Test(dependsOnMethods = "updateProductTest")
     @Story("Delete product")
     @Description("Delete the created product using its ID")
     @Severity(SeverityLevel.BLOCKER)

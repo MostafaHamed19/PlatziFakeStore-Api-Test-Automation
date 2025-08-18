@@ -36,7 +36,7 @@ public class UserSmokeTest extends BaseTest {
         Assert.assertFalse(users.isEmpty(), "Users array is empty");
     }
 
-    @Test(priority = 2)
+    @Test(dependsOnMethods = "getAllUsers")
     @DisplayName("Create New User")
     @Description("Verify adding a new user with valid credentials")
     @Severity(SeverityLevel.CRITICAL)
@@ -61,7 +61,7 @@ public class UserSmokeTest extends BaseTest {
         Assert.assertEquals(responseUser.getRole(), "customer", "Role should be 'customer'");
     }
 
-    @Test(priority = 3)
+    @Test(dependsOnMethods = "createUser")
     @DisplayName("Get User by ID")
     @Description("Verify retrieving a user by ID returns correct user details")
     @Severity(SeverityLevel.NORMAL)
@@ -79,7 +79,7 @@ public class UserSmokeTest extends BaseTest {
         Assert.assertEquals(responseUser.getAvatar(), "hamed.png", "Avatar should match");
     }
 
-    @Test(priority = 4)
+    @Test(dependsOnMethods = "getUserById")
     @DisplayName("Update Existing User")
     @Description("Verify updating an existing user's info works correctly")
     @Severity(SeverityLevel.CRITICAL)
@@ -102,7 +102,7 @@ public class UserSmokeTest extends BaseTest {
         Assert.assertEquals(response.jsonPath().getString("avatar"), updatedUser.getAvatar(), "Avatar should match");
     }
 
-    @Test(priority = 5)
+    @Test(dependsOnMethods = "updateUser")
     @DisplayName("Delete User")
     @Description("Verify deleting the created user using its ID")
     @Severity(SeverityLevel.CRITICAL)

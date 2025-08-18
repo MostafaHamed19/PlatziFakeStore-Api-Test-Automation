@@ -1,0 +1,3863 @@
+{
+	"info": {
+		"_postman_id": "dd98d0c6-3c93-4e37-bad5-0f28b6698e1f",
+		"name": "PlatziFakeStore",
+		"description": "StartFragment**Platzi Fake Store API** is a comprehensive, realistic mock e-commerce API ideal for learning, prototyping, and testing. It provides a rich set of REST and GraphQL endpoints covering products, categories, users, authentication, and more. It's perfect for practicing CRUD operations, pagination and filtering. It also comes prepackaged with ready-to-use Postman and Insomnia collection files to help you get started quickly.EndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33560028"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Category - ValidScenarios",
+					"item": [
+						{
+							"name": "getAllCategories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is an array\", function () {\r",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Each product has required fields\", function () {\r",
+											"    jsonData.forEach((category) => {\r",
+											"        pm.expect(category).to.have.property(\"id\");\r",
+											"        pm.expect(category).to.have.property(\"name\");\r",
+											"        pm.expect(category).to.have.property(\"slug\");\r",
+											"        pm.expect(category).to.have.property(\"image\");\r",
+											"        pm.expect(category).to.have.property(\"creationAt\");\r",
+											"        pm.expect(category).to.have.property(\"updatedAt\");\r",
+											"    });\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createCategory",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"New Category \" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const requestData = JSON.parse(pm.request.body.raw);   \r",
+											"const responseData = pm.response.json();   \r",
+											"pm.collectionVariables.set(\"categoryId\", responseData.id);\r",
+											"pm.collectionVariables.set(\"categorySlug\", responseData.slug);\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response matches request data\", function () {\r",
+											"    pm.expect(responseData.name).to.eql(requestData.name);\r",
+											"    pm.expect(responseData.image).to.eql(requestData.image);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{unique_title}}\",\r\n  \"image\": \"https://placeimg.com/640/480/any\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCategoryByID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const categoryId = parseInt(pm.collectionVariables.get(\"categoryId\"));\r",
+											"pm.test(\"Response has correct category ID\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"id\", categoryId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has all required fields\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData).to.have.property(\"slug\");\r",
+											"    pm.expect(jsonData).to.have.property(\"image\");\r",
+											"    pm.expect(jsonData).to.have.property(\"creationAt\");\r",
+											"    pm.expect(jsonData).to.have.property(\"updatedAt\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories/{{categoryId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCategoryBySlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"const slugParam = pm.collectionVariables.get(\"categorySlug\");\r",
+											"pm.test(`Response has correct categorySlug = '${slugParam}'`, function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"slug\", slugParam);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories/slug/{{categorySlug}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"slug",
+										"{{categorySlug}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateCategory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const requestData = JSON.parse(pm.request.body.raw);   \r",
+											"const responseData = pm.response.json();   \r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response matches request data\", function () {\r",
+											"    pm.expect(responseData.name).to.eql(requestData.name);\r",
+											"    pm.expect(responseData.image).to.eql(requestData.image);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Updated Category Name\",\r\n  \"image\": \"https://placehold.co/600x400\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/{{categoryId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteCategory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"category has deleted successfully\", function () {\r",
+											"    pm.expect(pm.response.text()).to.eql(\"true\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories/{{categoryId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Category - InvalidScenarios",
+					"item": [
+						{
+							"name": "CreateCategotyWithEmptyTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"name should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\",\r\n  \"image\": \"https://placeimg.com/640/480/any\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CreateCategotyWithEmptyTitle Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"name should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\",\r\n  \"image\": \"https://placeimg.com/640/480/any\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CreateCategotyWithWrongFormatImage",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"image must be a URL address\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Testing\",\r\n  \"image\": \"testtext\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetCategoryWithNotExisitingId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"verify Body Contains expected validation messages\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).to.include(\"Could not find any entity of type\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories/999999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetCategoryWithAlphanumricId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"verify Body Contains expected validation messages\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.eq;(\"Validation failed (numeric string is expected)\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories/ABC",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"ABC"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteCategoryWithInvalidID(Not Exisit) Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"User Not Found\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.name).to.eql(\"EntityNotFoundError\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/99999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"99999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteCategoryWithInvalidID(not numeric)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Error Message Contains message and error type\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonPath.message).to.eql(\"Validation failed (numeric string is expected)\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/categories/abc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"abc"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Product - ValidScenarios",
+					"item": [
+						{
+							"name": "getAllProducts",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is an array\", function () {\r",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Each product has required fields\", function () {\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product).to.have.property(\"id\");\r",
+											"        pm.expect(product).to.have.property(\"title\");\r",
+											"        pm.expect(product).to.have.property(\"price\");\r",
+											"        pm.expect(product).to.have.property(\"description\");\r",
+											"        pm.expect(product).to.have.property(\"category\");\r",
+											"        pm.expect(product.category).to.have.property(\"id\");\r",
+											"        pm.expect(product.category).to.have.property(\"name\");\r",
+											"        pm.expect(product.category).to.have.property(\"image\");\r",
+											"        pm.expect(product.images).to.be.an(\"array\");\r",
+											"        pm.expect(product.images.length).to.be.above(0);\r",
+											"    });\r",
+											"});\r",
+											"pm.test(\"Each product has Positive Price\", function () {\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product).to.have.property('price').that.is.a('number').and.is.above(0, \"Price should be a positive number\")\r",
+											"    });\r",
+											"});\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "price",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"const requestData = JSON.parse(pm.request.body.raw);\r",
+											"\r",
+											"pm.collectionVariables.set(\"product_id\", jsonData.id);\r",
+											"pm.collectionVariables.set(\"product_slug\", jsonData.slug);\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains the new product data\", function () {\r",
+											"    pm.expect(jsonData).to.have.any.keys('id', 'title', 'slug', 'description', 'category', 'images', 'creationAt','updatedAt');\r",
+											"    pm.expect(jsonData.title).to.eql(requestData.title);\r",
+											"    pm.expect(jsonData.price).to.eql(requestData.price);\r",
+											"    pm.expect(jsonData.description).to.eql(requestData.description);\r",
+											"    pm.expect(jsonData.category.id).to.eql(requestData.categoryId);\r",
+											"    pm.expect(jsonData.images).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.images[0]).to.include(\"https://\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"NewProduct\" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{unique_title}}\",\r\n  \"price\": 10,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getSpecificProductByID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response has correct product ID\", function () {\r",
+											"    let expected_id=parseInt(pm.collectionVariables.get(\"product_id\"));\r",
+											"    pm.expect(jsonData).to.have.property(\"id\",expected_id);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has all required fields\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"title\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\");\r",
+											"    pm.expect(jsonData).to.have.property(\"description\");\r",
+											"    pm.expect(jsonData).to.have.property(\"category\");\r",
+											"    pm.expect(jsonData.category).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData.category).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData.images).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.images.length).to.be.above(0);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getSpecificProductBySlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response has correct slug\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"slug\", pm.collectionVariables.get(\"product_slug\") );\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has all required fields\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"title\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\");\r",
+											"    pm.expect(jsonData).to.have.property(\"description\");\r",
+											"    pm.expect(jsonData).to.have.property(\"category\");\r",
+											"    pm.expect(jsonData.category).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData.category).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData.images).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.images.length).to.be.above(0);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/slug/{{product_slug}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"slug",
+										"{{product_slug}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PartialUpdateProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product was updated correctly\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.title).to.eql(\"Change title\");\r",
+											"    pm.expect(jsonData.price).to.eql(100);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Change title\",\r\n  \"price\": 100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FullyUpdateProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product was updated correctly\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.title).to.eql(\"Change title\");\r",
+											"    pm.expect(jsonData.price).to.eql(100);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Change title\",\r\n  \"price\": 100,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": 1,\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Product - InvalidScenarios",
+					"item": [
+						{
+							"name": "NotExisitingProductId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Response Message Contains Name & Message With error description\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).contains(\"Could not find any entity of type\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/999999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "IDNotNumber",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Response Body Contains message and error type\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Validation failed (numeric string is expected)\");\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/abc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"abc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SlugNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Response Message Contains Name & Message With error description\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).contains(\"Could not find any entity of type\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/slug/test",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"slug",
+										"test"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithInvalidCategory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Response Message Contains Name & Message With error description\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).to.include('Could not find any entity of type \"Category\"');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Invalid\",\r\n  \"price\": 10,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": 999999,\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithoutTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.message).to.include(\"title should not be empty\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"price\": 10,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithNumericTitleValue",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Response Message Contains Name & Message With error description\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).to.include('Could not find any entity of type \"Category\"');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": 120,\r\n  \"price\": 10,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithoutPrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.message).to.include(\"price should not be empty\");\r",
+											"    pm.expect(jsonData.message).to.include(\"price must be a positive number\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"New Product \" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{unique_title}}\",\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithNegativePrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.message).to.include(\"price must be a positive number\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"New Product \" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{unique_title}}\",\r\n  \"price\": -15,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithoutdescription",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.message).to.include(\"description should not be empty\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"New Product \" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{unique_title}}\",\r\n  \"price\": 10,\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"https://placehold.co/600x400\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProductWithInvalidImageURL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.message).to.include(\"each value in images must be a URL address\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let timestamp = Date.now();\r",
+											"let uniqueTitle = \"New Product \" + timestamp;\r",
+											"pm.environment.set(\"unique_title\", uniqueTitle);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"{{unique_title}}\",\r\n  \"price\": 10,\r\n  \"description\": \"A description\",\r\n  \"categoryId\": {{exisitCategoryId}},\r\n  \"images\": [\"Text\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWithoutTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.include(\"Bad Request\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWithoutPrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"price\": 0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWitNegativePrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"price\": -100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWitStringPrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"price\": \"One Hundred\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWithInvalidCategoryId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categoryId\": 999999\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWithInvalidCategoryIdString",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categoryId\": \"abc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProductWithInvalidImagePathURL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.error).to.include(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"images\": [\"Text\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has deleted successfully\", function () {\r",
+											"    pm.expect(pm.response.text()).to.eql(\"true\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verifyDeletedProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteProductWithInvalidID(Not Exisit)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has deleted successfully\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.name).to.eql(\"EntityNotFoundError\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/99999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"99999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteProductWithInvalidID(not numeric)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Product has deleted successfully\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonPath.message).to.eql(\"Validation failed (numeric string is expected)\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/abc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"abc"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "ProductFilter",
+			"item": [
+				{
+					"name": "ValidProductFilter",
+					"item": [
+						{
+							"name": "filterByPrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const priceParam = parseInt(pm.request.url.query.find(q => q.key === \"price\")?.value);\r",
+											"pm.test(`All products have price = '${priceParam}'`, function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product.price).to.eql(priceParam);\r",
+											"    });\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/?price={{price}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									],
+									"query": [
+										{
+											"key": "price",
+											"value": "{{price}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterByRangePrice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const minPriceParam = parseInt(pm.request.url.query.find(q => q.key === \"price_min\")?.value);\r",
+											"const maxPriceParam = parseInt(pm.request.url.query.find(q => q.key === \"price_max\")?.value);\r",
+											"pm.test(`All products have price between ${minPriceParam} and ${maxPriceParam}`, function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product.price).to.be.within(minPriceParam, maxPriceParam);\r",
+											"    });\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/?price_min={{price_min}}&price_max={{price_max}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									],
+									"query": [
+										{
+											"key": "price_min",
+											"value": "{{price_min}}"
+										},
+										{
+											"key": "price_max",
+											"value": "{{price_max}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterByTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const titleParam = pm.request.url.query.find(q => q.key === \"title\")?.value;\r",
+											"pm.test(`All product titles contain '${titleParam}'`, function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product.title.toLowerCase()).to.include(titleParam);\r",
+											"    });\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/?title={{title}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "{{title}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterByCategoryID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const idParam = parseInt(pm.request.url.query.find(q => q.key === \"categoryId\")?.value);\r",
+											"\r",
+											"pm.test(`All products belong to categoryId = ${idParam}`, function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product.category.id).to.eql(idParam);\r",
+											"    });\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/?categoryId={{Category_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									],
+									"query": [
+										{
+											"key": "categoryId",
+											"value": "{{Category_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "filterByCategorySlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const slugParam = pm.request.url.query.find(q => q.key === \"categorySlug\")?.value;\r",
+											"\r",
+											"pm.test(`All products belong to categorySlug = '${slugParam}'`, function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    jsonData.forEach((product) => {\r",
+											"        pm.expect(product.category.slug).to.eql(slugParam);\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/?categorySlug={{category_Slug}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										""
+									],
+									"query": [
+										{
+											"key": "categorySlug",
+											"value": "{{category_Slug}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User - ValidScenarios",
+					"item": [
+						{
+							"name": "GetAllUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"pm.test(\"Response has the required fields\", function () {\r",
+											"\t    const responseData = pm.response.json();\r",
+											"\t    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+											"\t\tresponseData.forEach(product => {\r",
+											"\t\tpm.expect(product).to.have.all.keys('id', 'email', 'password', 'name', 'role', 'avatar', 'creationAt','updatedAt');\r",
+											"\t\tpm.expect(product.email).to.be.a('string');\r",
+											"\t\tpm.expect(product.password).to.be.a('string');\r",
+											"\t\tpm.expect(product.name).to.be.a('string');\r",
+											"\t\tpm.expect(product.role).to.be.a('string');\r",
+											"\t\tpm.expect(product.avatar).to.be.a('string');\r",
+											"\t\tpm.expect(product.creationAt).to.be.a('string');\r",
+											"\t\tpm.expect(product.updatedAt).to.be.a('string');\r",
+											"\t\t});\r",
+											"\t});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LimitAllUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Check Count of Products shown is '3'\", function() {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(3);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/?limit=3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"const userId = jsonData.id;\r",
+											"pm.collectionVariables.set(\"user_id\", userId);\r",
+											"\r",
+											"pm.test(\"Verify Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Verify Added User Role Is Customer\", function () {\r",
+											"    pm.expect(jsonData.role).to.eql(\"customer\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is not empty \", function () {\r",
+											"pm.expect(responseData).to.be.an('object').that.is.not.empty;\r",
+											"});\r",
+											"pm.test(\"Response Id = Request Id\", function () {\r",
+											"let user_id = pm.collectionVariables.get(\"user_id\");\r",
+											"pm.expect(responseData.id).to.be.eql(user_id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"packages": {},
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/{{user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"const userToken=jsonData.access_token\r",
+											"pm.collectionVariables.set(\"Token\",userToken);\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains Access And Refresh Token\", function () {\r",
+											"    pm.expect(jsonData).have.property(\"access_token\");\r",
+											"    pm.expect(jsonData).have.property(\"refresh_token\")\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AccessUserProfile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json(); \r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains email,password,avatar\", function () {\r",
+											"    pm.expect(jsonData).have.property(\"email\");\r",
+											"    pm.expect(jsonData).have.property(\"password\");\r",
+											"    pm.expect(jsonData).have.property(\"avatar\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/auth/profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UpdateUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Verify Name Changes To 'ChangedName'\", function () {\r",
+											"    pm.expect(jsonData.name).to.eql(\"Changed Name\");\r",
+											"    pm.expect(jsonData.email).to.eql(\"test@gmail.com\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"test@gmail.com\",\r\n  \"name\": \"Changed Name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/{{user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User - InvalidScenarios",
+					"item": [
+						{
+							"name": "AddUserWithoutName",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithEmptyName",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"name should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\",\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithNumericName",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": 456,\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithoutEmail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"email should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithEmptyEmail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"email should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithWrongEmailFormat",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"email must be an email\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"mh211\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithoutPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"password should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithEmptyPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"password should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithPasswordLessThan4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"password must be longer than or equal to 4 characters\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"123\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithPasswordWithSpecialCharacters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"password must contain only letters and numbers\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"123@#\",\r\n  \"avatar\": \"https://picsum.photos/800\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithoutAvatar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"avatar should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithEmptyAvatar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"avatar should not be empty\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddUserWithWrongAvatarFormat",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Verify Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Message array contains expected validation messages\", function () {\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.be.an(\"array\");\r",
+											"     pm.expect(jsonData.message).to.include(\"avatar must be a URL address\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"email\":\"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\",\r\n  \"avatar\": \"picsum\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetUserWithNotExisitingId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"verify Body Contains expected validation messages\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"EntityNotFoundError\");\r",
+											"    pm.expect(jsonData.message).to.include(\"Could not find any entity of type\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/999999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetUserWithAlphanumricId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"verify Body Contains expected validation messages\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonData.message).to.eq;(\"Validation failed (numeric string is expected)\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/ABC",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"ABC"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LoginWithValidEmailAndWrongPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains Error Message\", function () {\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"9999999\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LoginWithInValidEmailAndCorrectPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains Error Message\", function () {\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"to99assda@gmail.com\",\r\n  \"password\": \"{{user_password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LoginWithInValidEmailAndInvalidPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains Error Message\", function () {\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"to99assda@gmail.com\",\r\n  \"password\": \"123asdasd23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UserCantAccessWithInvalidToken",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"pm.test(\"Verify Respose Contains Error Message\", function () {\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIxLCJpYXQiOjE3NTQyODA0NjEsImV4cCI6MTc1NjAwODQ2MX0.cRm1ckXZR1PniO00gym2gRH4woO3B-lYNNggIrPqrRYasdasd",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/auth/profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"    var responseText = pm.response.text();\r",
+											"    pm.expect(responseText).to.eql(\"true\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/{{user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteUserWithInvalidID(Not Exisit)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"User Not Found\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.name).to.eql(\"EntityNotFoundError\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/99999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"99999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteUserWithInvalidID(not numeric) Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Error Message Contains message and error type\", function () {\r",
+											"    var jsonPath = pm.response.json();\r",
+											"    pm.expect(jsonPath.error).to.eql(\"Bad Request\");\r",
+											"    pm.expect(jsonPath.message).to.eql(\"Validation failed (numeric string is expected)\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/abc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"abc"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "categoryId",
+			"value": ""
+		},
+		{
+			"key": "categorySlug",
+			"value": ""
+		},
+		{
+			"key": "product_id",
+			"value": ""
+		},
+		{
+			"key": "product_slug",
+			"value": ""
+		},
+		{
+			"key": "exisitCategoryId",
+			"value": "1"
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "user_email",
+			"value": "mh19@gmail.com"
+		},
+		{
+			"key": "user_password",
+			"value": "123456"
+		},
+		{
+			"key": "Token",
+			"value": ""
+		},
+		{
+			"key": "user_name",
+			"value": "Mostafa"
+		}
+	]
+}

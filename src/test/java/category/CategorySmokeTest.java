@@ -42,7 +42,7 @@ public class CategorySmokeTest extends BaseTest {
         Assert.assertFalse(categories.isEmpty(), "Categories list is empty");
     }
 
-    @Test(priority = 2)
+    @Test(dependsOnMethods = "getAllCategories")
     @Story("Create New Category")
     @Description("Verify that a new category can be created successfully")
     @Severity(SeverityLevel.CRITICAL)
@@ -68,7 +68,7 @@ public class CategorySmokeTest extends BaseTest {
         Assert.assertNotNull(responseCategory.getImage(), "Category image is null");
     }
 
-    @Test(priority = 3)
+    @Test(dependsOnMethods = "createCategory")
     @Story("Get Category by ID")
     @Description("Verify that a category can be retrieved by its ID")
     @Severity(SeverityLevel.NORMAL)
@@ -89,7 +89,7 @@ public class CategorySmokeTest extends BaseTest {
         Assert.assertNotNull(responseCategory.getImage(), "Image is null");
     }
 
-    @Test(priority = 4)
+    @Test(dependsOnMethods = "createCategory")
     @Story("Get Category by Slug")
     @Description("Verify that a category can be retrieved by its slug")
     @Severity(SeverityLevel.NORMAL)
@@ -110,7 +110,7 @@ public class CategorySmokeTest extends BaseTest {
         Assert.assertNotNull(responseCategory.getImage(), "Image is null");
     }
 
-    @Test(priority = 5)
+    @Test(dependsOnMethods = "createCategory")
     @Story("Update Category")
     @Description("Verify that a category can be updated successfully")
     @Severity(SeverityLevel.CRITICAL)
@@ -134,7 +134,7 @@ public class CategorySmokeTest extends BaseTest {
         Assert.assertEquals(responseCategory.getImage(), "UpdatedImage.png", "Image wasn't updated");
     }
 
-    @Test(priority = 6)
+    @Test(dependsOnMethods = "updateCategory")
     @Story("Delete Category")
     @Description("Verify that a category can be deleted successfully")
     @Severity(SeverityLevel.CRITICAL)
